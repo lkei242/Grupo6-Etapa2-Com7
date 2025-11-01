@@ -1,22 +1,38 @@
-import tkinter as t
+import tkinter as tk
 
 def saludar():
     entrada2 = entrada.get()
     etiqueta.config(text= f"hola, {entrada2}!" )
     
-ventana = t.Tk()
+ventana = tk.Tk()
 ventana.title("Programa")
 ventana.geometry("300x200") 
 
-etiqueta= t.Label(ventana,text="Holaaa")
+
+###Editar Ventana###
+ventana.configure(
+    bg="#494949",  # Color de fondo
+    #lo mismo de geometry que está arriba:
+    width=800,       # Ancho de la ventana
+    height=600,      # Alto de la ventana
+)
+# Permitir redimensionar la ventana
+ventana.resizable(True, True)  # (ancho, alto)
+
+###Editar Etiqueta###
+
+
+
+etiqueta= tk.Label(ventana,text="Holaaa")
 etiqueta.pack()
 
-entrada = t.Entry(ventana)
+entrada = tk.Entry(ventana)
 entrada.pack()
 
-boton = t.Button(ventana, text = "Saludar", command = saludar)
+boton = tk.Button(ventana, text = "Saludar", command = saludar)
 boton.pack()
 
 ventana.mainloop()
+
 
 
