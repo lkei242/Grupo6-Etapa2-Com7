@@ -1,10 +1,13 @@
 import tkinter as tk
 from Menus import Menu
-
+from BaseDatos import BaseDatos
+from Notificaciones import GestorNotificaciones 
 
 class Ventana:
     def __init__(self):
         self.ventana = tk.Tk()
+        self.db = BaseDatos()  
+        self.notificaciones = GestorNotificaciones(self.db)
 
     def iniciar(self):
         self.ventana.title("🕒 Organizador de Tareas")

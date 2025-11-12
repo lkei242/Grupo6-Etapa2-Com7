@@ -75,6 +75,18 @@ class BaseDatos:
         self.cursor.execute("SELECT * FROM categorias ORDER BY nombre_categoria")
         return self.cursor.fetchall()
 
+    def tareas_para_notificar(self):
+        """
+        Devuelve las tareas cuya fecha y hora ya pasó,
+        y que todavía no fueron notificadas.
+        """
+        self.cursor.execute('''
+            SELECT id, titulo, descripcion, fecha_hora
+            FROM tareas
+            WHERE completada = 0 AND notificada = 0
+        ''')
+        return self.cursor.fetchall()
+
     # Cerramos la conexion
     def cerrar(self):
         self.conn.close()

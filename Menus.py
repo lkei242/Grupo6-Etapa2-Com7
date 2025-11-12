@@ -16,6 +16,10 @@ class Menu:
         frame = ttk.Frame(self.ventana, padding=10)
         frame.pack(fill="both", expand=True)
         ttk.Label(frame, text="📋 Lista de Tareas", font=("Segoe UI", 14, "bold")).pack(pady=10)
+        botones = ttk.Frame(frame)
+        botones.pack(pady=5)
+        ttk.Button(botones, text="🔔 Notificaciones", command=self.ver_notificaciones).grid(row=0, column=4, padx=5)
+
 
         # --- CONTENEDOR PARA EL TREEVIEW Y EL SCROLLBAR ---
         # Creación del Frame nuevo para contener tanto el Treeview como el Scrollbar
@@ -113,6 +117,13 @@ class Menu:
         id = int(item[0])
         self.db.marcar_completada(id)
         self.actualizar_lista()
+
+        # Abre la ventana de notificaciones
+    def ver_notificaciones(self):
+        from VentanaNotificaciones import VentanaNotificaciones  # evita import circular
+        ventana_notif = VentanaNotificaciones(self.ventana, self.db)
+        self.ventana.wait_window(ventana_notif)
+
 
     ###Esto es para poblar los Menús###
     def carga_menu1(self):
