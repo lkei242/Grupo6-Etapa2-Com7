@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from BaseDatos import BaseDatos
 from Formularios import FormularioTarea
+import reloj_alarma #importando el reloj para agregarlo a las funciones del menu principal
 
 ###Menu perteneciente al Programa en sí###
 
@@ -30,6 +31,8 @@ class Menu:
         ttk.Button(botones, text="✏️ Editar", command=self.editar_tarea).grid(row=0, column=1, padx=5)
         ttk.Button(botones, text="🗑️ Eliminar", command=self.eliminar_tarea).grid(row=0, column=2, padx=5)
         ttk.Button(botones, text="✅ Completar", command=self.completar_tarea).grid(row=0, column=3, padx=5)
+        ttk.Button(botones, text="⏰ Abrir Reloj", command=self.abrir_reloj).grid(row=0, column=4, padx=5) #agrego boton del reloj
+        
 
         self.actualizar_lista()
         
@@ -93,6 +96,8 @@ class Menu:
         self.db.marcar_completada(id)
         self.actualizar_lista()
 
+
+
     ###Esto es para poblar los Menús###
     def carga_menu1(self):
         
@@ -109,3 +114,17 @@ class Menu:
         self.menu_ejemplo2 = tk.Menu(self.menu_horizontal, tearoff=0)
         self.menu_ejemplo2.add_command(label="Acerca de", command=lambda: messagebox.showinfo("Programa TPI", "Versión 1.0"))
 
+    #Agreando la funcionalidad del reloj
+    def abrir_reloj(self):
+        #aca creamos una ventana secundaria tipo flotante para seguir viendo de fondo el menu
+        self.ventana_reloj = tk.Toplevel(self.ventana)
+        self.ventana_reloj.title("Reloj y Alarma")
+        self.ventana_reloj.geometry("400x400")
+
+        #Ahora va el contenido del reloj dentro de esa ventana
+        reloj_frame = reloj_alarma.crear_reloj(self.ventana_reloj)
+        reloj_frame.pack(expand= True, fill="both", pady=20)
+
+        #Y agregamos la funcion de que vuelva al estado inicial cuando se oprima "volver al menu"
+        btn_volver = tk.Button(self.ventana_reloj, text= "Volver al Menu", command=self.ventana_reloj.destroy)
+        btn_volver.pack(pady=10)
