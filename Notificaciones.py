@@ -1,14 +1,63 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
 import threading
 import time
 from datetime import datetime
 from plyer import notification # importacion de plyer para notificaciones del sistema operativo
 
-class GestorNotificaciones:
-    def __init__(self, db):
+class VentanaNotificaciones(tk.Toplevel):
+    def __init__(self, master, db, colores):
+        super().__init__(master)
         self.db = db
+        self.colores = colores
+        self.title("🔔 Notificaciones")
+        self.geometry("500x400")
+        self.config(bg=colores["bg_principal"])
+        
+        # Inicializar gestor de notificaciones
         self.hilo_activo = True
         self.hilo = threading.Thread(target=self.verificar_notificaciones, daemon=True)
         self.hilo.start()
+        
+        # Detener hilo al cerrar la ventana
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+        
+        self.crear_widgets()
+
+    def crear_widgets(self):
+        ttk.Label(self, text="Tareas Pendientes de Notificar", font=("Segoe UI", 12, "bold")).pack(pady=10)
+        
+        tree_container = ttk.Frame(self)
+        tree_container.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        scrollbar = ttk.Scrollbar(tree_container, orient="vertical")
+        scrollbar.pack(side="right", fill="y")
+        
+        self.tree = ttk.Treeview(tree_container, columns=("titulo", "fecha", "desc"), show="headings", height=12)
+        self.tree.pack(side="left", fill="both", expand=True)
+        
+        scrollbar.config(command=self.tree.yview)
+        self.tree.config(yscrollcommand=scrollbar.set)
+        
+        self.tree.heading("titulo", text="Título")
+        self.tree.heading("fecha", text="Fecha y Hora")
+        self.tree.heading("desc", text="Descripción")
+        
+        self.tree.column("titulo", width=150)
+        self.tree.column("fecha", width=150)
+        self.tree.column("desc", width=150)
+        
+        self.cargar_notificaciones()
+        
+        ttk.Button(self, text="Cerrar", command=self.on_closing).pack(pady=10)
+
+    def cargar_notificaciones(self):
+        tareas_pendientes = self.db.tareas_para_notificar()
+        for tarea in tareas_pendientes:
+            self.tree.insert("", "end", values=(tarea[1], tarea[3], tarea[2]))
+        
+        if not tareas_pendientes:
+            self.tree.insert("", "end", values=("No hay notificaciones pendientes", "", ""))
 
     def verificar_notificaciones(self):
         while self.hilo_activo:
@@ -36,5 +85,6 @@ class GestorNotificaciones:
             timeout=10
         )
 
-    def detener(self):
+    def on_closing(self):
         self.hilo_activo = False
+        self.destroy()

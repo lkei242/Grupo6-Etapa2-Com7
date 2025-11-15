@@ -30,40 +30,44 @@ def _parsear_hora_a_segundos(hora_texto):
 
 
 class RelojAlarma(tk.Frame):
-    def __init__(self, master=None, **kwargs):
+    def __init__(self, master=None, colores=None, **kwargs):
         super().__init__(master, **kwargs)
-        self.config(bg=self.master.cget("bg"))
+        # Si no se pasan colores, tomamos el fondo del master como fallback
+        if colores is None:
+            colores = {
+                "bg_principal": self.master.cget("bg"),
+                "bg_secundario": "grey",
+                "fg_texto": "white",
+                "fg_acento": "lightgreen",
+                "border": "#3d3d3d"
+            }
+        self.colores = colores
+
+        self.config(bg=self.colores["bg_principal"])
         self.alarm_active = False
         self.alarm_seconds = None
         self.warned_before = False  # para no repetir el aviso 1 minuto antes
         self.alarm_triggered = False
 
-        # Widgets
-        self.reloj_label = tk.Label(self, font=("Arial", 48), bg="black", fg="white")
+        # Widgets usando colores del tema
+        self.reloj_label = tk.Label(self, font=("Arial", 48),bg=self.colores["bg_secundario"],fg=self.colores["fg_texto"])
         self.reloj_label.pack(pady=(10, 6))
 
-        tk.Label(self, text="Ingresá la hora de la alarma (HH:MM:SS):",
-                 bg="grey", fg="white", font=("Arial", 12)).pack(pady=(4, 2))
+        tk.Label(self, text="Ingresá la hora de la alarma (HH:MM:SS):",bg=self.colores["bg_principal"],fg=self.colores["fg_texto"],font=("Arial", 12)).pack(pady=(4, 2))
 
-        self.entrada_alarma = tk.Entry(self, font=("Arial", 14), justify="center")
+        self.entrada_alarma = tk.Entry(self, font=("Arial", 14), justify="center",bg=self.colores["bg_secundario"],fg=self.colores["fg_texto"],insertbackground=self.colores["fg_texto"])
         self.entrada_alarma.pack(pady=4)
 
-        botones_frame = tk.Frame(self, bg="grey")
+        botones_frame = tk.Frame(self, bg=self.colores["bg_principal"])
         botones_frame.pack(pady=8)
 
-        self.boton_activar = tk.Button(botones_frame, text="Activar alarma",
-                                       command=self.activar_alarma, font=("Arial", 12),
-                                       bg="lightgreen")
+        self.boton_activar = tk.Button(botones_frame, text="Activar alarma",command=self.activar_alarma, font=("Arial", 12),bg=self.colores["bg_secundario"],fg=self.colores["fg_texto"],activebackground=self.colores["fg_acento"])
         self.boton_activar.grid(row=0, column=0, padx=8)
 
-        self.boton_desactivar = tk.Button(botones_frame, text="Desactivar alarma",
-                                          command=self.desactivar_alarma, font=("Arial", 12),
-                                          bg="tomato")
+        self.boton_desactivar = tk.Button(botones_frame, text="Desactivar alarma",command=self.desactivar_alarma, font=("Arial", 12),bg=self.colores["border"],fg=self.colores["fg_texto"],activebackground=self.colores["fg_acento"])
         self.boton_desactivar.grid(row=0, column=1, padx=8)
-
         # Etiqueta pequeña para ver estado
-        self.estado_label = tk.Label(self, text="Alarma: Inactiva", bg="black", fg="white",
-                                     font=("Arial", 10))
+        self.estado_label = tk.Label(self, text="Alarma: Inactiva",bg=self.colores["bg_principal"],fg=self.colores["fg_texto"],font=("Arial", 10))
         self.estado_label.pack(pady=(4, 10))
 
         # Iniciar el loop del reloj
@@ -122,9 +126,9 @@ class RelojAlarma(tk.Frame):
 
 
 # --- Función helper para crear e integrar el widget en la app principal ---
-def crear_reloj(master=None):
+def crear_reloj(master=None, colores=None):
     """Crea y devuelve el Frame con el reloj"""
-    frame = RelojAlarma(master)
+    frame = RelojAlarma(master, colores=colores)
     return frame
 
 

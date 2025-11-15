@@ -5,7 +5,7 @@ class BaseDatos:
         self.conn = sqlite3.connect("organizador_tareas.db", check_same_thread=False) #crea (si no existe) o abre el archivo organizador_tareas.db
         self.cursor = self.conn.cursor()
         self.crear_tablas()
-
+ 
     def crear_tablas(self):
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS categorias (
