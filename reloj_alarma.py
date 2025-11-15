@@ -118,7 +118,7 @@ class RelojAlarma(tk.Frame):
         self.warned_before = False
         self.alarm_triggered = False
         self.estado_label.config(text="Alarma: Inactiva")
-        messagebox.showinfo("Alarma desactivada", "La alarma fue cancelada, ñeri.")
+        messagebox.showinfo("Alarma desactivada", "La alarma fue cancelada.")
 
 
 # --- Función helper para crear e integrar el widget en la app principal ---
